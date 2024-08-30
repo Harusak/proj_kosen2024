@@ -1,0 +1,41 @@
+# Datasaurus のデモスクリプト
+reference: https://www.research.autodesk.com/publications/same-stats-different-graphs/k
+
+```{r setup}
+pkgList <- c("ggplot2", "datasauRus", "dplyr")
+
+# パッケージの読み込み
+for(lib in pkgList){
+  if (!require(lib, character.only = TRUE)) {
+    install.packages(lib)
+    library(lib, character.only = TRUE)
+  } else {
+    library(lib, character.only = TRUE)
+  }
+}
+```
+
+## データセットの要約統計量を算出する
+```{r}
+# 各データセットの要約統計量の算出
+summary_stats <- datasaurus_dozen %>%
+  group_by(dataset) %>%
+  summarise(
+    mean_x = mean(x),
+    mean_y = mean(y),
+    sd_x = sd(x),
+    sd_y = sd(y),
+  )
+
+# 要約統計量の表示
+summary_stats
+```
+
+## プロットしてみる
+```{r}
+ggplot(datasaurus_dozen, aes(x=x, y=y, colour=dataset)) +
+  geom_point() +
+  theme_void() +
+  theme(legend.position='none') +
+  facet_wrap(~dataset, ncol=3)
+```
