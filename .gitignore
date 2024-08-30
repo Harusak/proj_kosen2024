@@ -1,5 +1,8 @@
 /Report/data/*
 !/Report/data/.gitkeep
+!/Report/data/processed
+!/Report/data/raw
+!/Report/data/sample
 
 /Report/data/processed/*
 !/Report/data/processed/.gitkeep
