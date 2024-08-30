@@ -1,6 +1,15 @@
 /Report/data/*
 !/Report/data/.gitkeep
 
+/Report/data/processed/*
+!/Report/data/processed/.gitkeep
+
+/Report/data/raw/*
+!/Report/data/raw/.gitkeep
+
+/Report/data/sample/*
+!/Report/data/sample/experiment_data.csv
+
 /Report/report_files
 
 /Report/report.*
