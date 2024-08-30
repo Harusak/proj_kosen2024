@@ -7,19 +7,21 @@
 はじめに，実験データの正規性の仮定を検定を行った．
 
 ```{r shapiro-test-binary}
+# Binary 実験データをフィルタ
 binaryBTperSub <- meanBTperExpAndSub |>
   filter(expID == "Binary") |>
   pivot_wider(names_from = targetCategory, values_from = meanBreakTime)
 
-# Shapiro-Wilk test on Binary Upright BT
-shapiroBinaryUp <- apa_print(
-  shapiro.test(binaryBTperSub$Upright)
-)
+# Binary 実験のUpright 条件でのBTについてShapiro-Wilk テスト
+# (参考 : https://data-science.gr.jp/implementation/ist_r_shapiro_wilk_test.html)
+shapiro_result_Bup <- __________
 
-# Shapiro-Wilk test on Binary Inverted BT
-shapiroBinaryInv <- apa_print(
-  shapiro.test(binaryBTperSub$Inverted)
-)
+# Binary 実験のInverted 条件でのBTについてShapiro-Wilk テスト
+shapiro_result_Binv <- __________
+
+# apa_print フォーマットに変更
+shapiroBinaryUp <- apa_print(shapiro_result_Bup)
+shapiroBinaryInv <- apa_print(shapiro_result_Binv)
 
 # 条件分岐によるテキストの生成
 if (shapiroBinaryUp$table$p.value == "< .001") {
@@ -48,9 +50,12 @@ if (shapiroBinaryInv$table$p.value == "< .001") {
 binaryBTperSub <- meanBTperExpAndSub |>
   filter(expID == "Binary")
 
-leveneBinary <- apa_print(
-  leveneTest(meanBreakTime ~ targetCategory, binaryBTperSub)
-)
+# Levene's test
+# (参考 : https://data-science.gr.jp/implementation/ist_r_levene_test.html)
+levene_result_binary <- __________
+
+# apa_print フォーマットに変換
+leveneBinary <- apa_print(levene_result_binary)
 
 if (leveneBinary$table$p.value == "< .001") {
   text_levene_result_binary <- "等分散性が仮定できない"
@@ -71,10 +76,12 @@ binaryBTperSub <- meanBTperExpAndSub |>
   filter(expID == "Binary") |>
   pivot_wider(names_from = targetCategory, values_from = meanBreakTime)
 
-# conduct a paired t-test
-ttestBinary <- apa_print(
-  t.test(binaryBTperSub$Inverted, binaryBTperSub$Upright, paired = TRUE)
-)
+# 対応ありt検定
+# (参考 : https://data-science.gr.jp/implementation/ist_r_paired_t_test.html)
+ttest_result_binary <- t.test(__________)
+
+# apa_print フォーマットに変換
+ttestBinary <- apa_print(ttest_result_binary)
 
 if (ttestBinary$table$p.value == "< .001") {
   text_ttest_result_binary <- "有意な差が認められた"
@@ -97,15 +104,15 @@ grayBTperSub <- meanBTperExpAndSub |>
   filter(expID == "Gray") |>
   pivot_wider(names_from = targetCategory, values_from = meanBreakTime)
 
-# Shapiro-Wilk test on Gray Upright BT
-shapiroGrayUp <- apa_print(
-  shapiro.test(grayBTperSub$Upright)
-)
+# Gray 実験のUpright 条件でのBTについてShapiro-Wilk テスト
+shapiro_result_Gray_Up <- __________
 
-# Shapiro-Wilk test on Gray Inverted BT
-shapiroGrayInv <- apa_print(
-  shapiro.test(grayBTperSub$Inverted)
-)
+# Gray 実験のInverted 条件でのBTについてShapiro-Wilk テスト
+shapiro_result_Gray_Inv <- __________
+
+# apa_print フォーマットに変換
+shapiroGrayUp <- apa_print(shapiro_result_Gray_Up)
+shapiroGrayInv <- apa_print(shapiro_result_Gray_Inv)
 
 # 条件分岐によるテキストの生成
 if (shapiroGrayUp$table$p.value == "< .001") {
@@ -134,9 +141,11 @@ if (shapiroGrayInv$table$p.value == "< .001") {
 grayBTperSub <- meanBTperExpAndSub |>
   filter(expID == "Gray")
 
-leveneGray <- apa_print(
-  leveneTest(meanBreakTime ~ targetCategory, grayBTperSub)
-)
+# Levene's test
+levene_result_gray <- __________
+
+# apa_print フォーマットに変換
+leveneGray <- apa_print(levene_result_gray)
 
 if (leveneGray$table$p.value == "< .001>") {
   text_levene_result_gray <- "等分散性が仮定できない"
@@ -157,10 +166,11 @@ grayBTperSub <- meanBTperExpAndSub |>
   filter(expID == "Gray") |>
   pivot_wider(names_from = targetCategory, values_from = meanBreakTime)
 
-# conduct a paired t-test
-ttestGray <- apa_print(
-  t.test(grayBTperSub$Inverted, grayBTperSub$Upright, paired = TRUE)
-)
+# Gray 実験についての対応ありt検定
+ttest_result_gray <- __________
+
+# apa_print フォーマットに変換
+ttestGray <- apa_print(ttest_result_gray)
 
 if (ttestGray$table$p.value == "< .001") {
   text_ttest_result_gray <- "有意な差が認められた"

@@ -39,8 +39,8 @@ meanBTperExpAndSub <- dfMain |>
 summary_data <- meanBTperExpAndSub %>%
   group_by(expID, targetCategory) %>%
   summarise(
-    mean = mean(meanBreakTime),
-    se = sd(meanBreakTime) / sqrt(n()),
+    mean = ____(meanBreakTime), # <!-- 穴埋め --> 平均値を求める関数
+    se = ____(meanBreakTime) / ____(n()), # <!-- 穴埋め --> 標準誤差を求める．標準誤差を求める式は？
     .groups = 'drop'
   )
 
@@ -141,78 +141,13 @@ plotBT_binary <- ggplot() +
   )
 
 # ========== ========== ========== ========== ==========
-# Gray 実験のデータを取得
-meanBTperExpAndSub_gray <- meanBTperExpAndSub |>
-  filter(expID=="Gray")
-summary_data_gray <- summary_data |>
-  filter(expID=="Gray")
+# Gray 実験
 
-# プロットの作成
-plotBT_gray <- ggplot() +
-
-  # ハーフアイプロット
-  ggdist::stat_halfeye(
-    data = meanBTperExpAndSub_gray,
-    aes(x = targetCategory, y = meanBreakTime, fill = targetCategory),
-    adjust = 0.5,         # バンド幅を調整して滑らかな外観にする
-    width = 0.6,          # ハーフアイプロットの幅
-    justification = -0.5, # プロットを左にシフトする
-    alpha = 0.5,           # 透明度を指定
-    .width = 0,
-    point_colour = NA
-  ) +
-
-  # ボックスプロット
-  geom_boxplot(
-    data = meanBTperExpAndSub_gray,
-    aes(x = targetCategory, y = meanBreakTime, fill = targetCategory),
-    width = 0.12,         # ボックスプロットの幅を狭く設定
-    position = position_nudge(x = 0.1),  # 位置をずらす
-    outlier.shape = NA    # ボックスプロットの外れ値を表示しない
-  ) +
-
-  # ドットプロット (煩雑になったため除外)
-  ggdist::stat_dots(
-    data = meanBTperExpAndSub_gray,
-    aes(x = targetCategory, y = meanBreakTime, fill = targetCategory),
-    side = "left",        # ドットを両側に表示
-    justification = 1,  # ドットを中央に配置
-    binwidth = 0.15,      # ドットのビン幅
-    colour = "#1c1d2f",   # ドットの枠線の色
-    alpha = 0.7           # 透明度を指定
-  ) +
-
-  geom_line(data = meanBTperExpAndSub_gray,
-            aes(x = targetCategory, y = meanBreakTime, group = interaction(expID, subID)),
-            position = position_dodge(0),
-            alpha = 0.4) +
-
-  # 平均値を菱形でプロット
-  geom_point(
-    data = summary_data_gray,
-    aes(x = targetCategory, y = mean),
-    shape = 18,           # 菱形を指定
-    size = 4,             # サイズを指定
-    position = position_nudge(x = 0.1),  # 位置をずらす
-  ) +
-
-  # エラーバーを追加
-  geom_errorbar(
-    data = summary_data_gray,
-    aes(x = targetCategory, y = mean, ymin = mean - se, ymax = mean + se),
-    width = 0.2,          # エラーバーの幅
-    position = position_nudge(x = 0.1),  # 位置をずらす
-  ) +
-
-  # colorset を使用して fill の色を設定
-  scale_fill_manual(values = colorset) +
-
-  # グラフのテーマ設定
-  theme_apa() +
-  theme(
-    legend.position = "bottom",    # 凡例を下に配置
-    legend.direction = "horizontal" # 凡例を横に並べる
-  )
+# Binary 実験を参考にコードを完成させる
+meanBTperExpAndSub_gray <- ____________ # Gray 実験データをフィルタ
+summary_data_gray <- ____________ # 基本統計量を算出
+plotBT_gray <- ggplot() + # グラフを完成させる
+  ____________
 
 saveRDS(plotBT_gray, file = here("data/plotBT_gray.rds"))
 saveRDS(plotBT_binary, file = here("data/plotBT_binary.rds"))
