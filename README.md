@@ -1,15 +1,3 @@
-# Usage
-
-## 解析パート
-- `Report/analysis` 内の`part_0*.rmd` を編集
-  - `part_01` : データ整形
-  - `part_02` : データ可視化
-  - `part_03` : 統計解析
-
-## レポート (必要であれば)
-- `Report/report.rmd` をコンパイル → レポート化
-  - `/Report/R/_compiler.r` を実行
-
 # Required
 ## R 環境
 - R version: > 4.2.x
@@ -42,7 +30,45 @@ tinytex::tlmgr_install("ipaex")
 - フォントその他
   - ヒラギノやNotoなどがシステムにインストールされて使用可能な場合，`/Report/etc/_preamble.tex` から設定可
 
-# Reference
-本実習の解析には，Open Science Framework (OSF) に公開されている Michael Makoto Martinsen による Facial Ambiguity and Perception: How Face-Likeness Affects Breaking Time in Continuous Flash Suppression の実験データを使用しました．[[1]](#1) このデータは [https://osf.io/jes4u/](url) からダウンロードし，解析を行いました．
+# Usage
 
+## 解析データ
+本実習の解析には，Open Science Framework (OSF) に公開されている Michael Makoto Martinsen による Facial Ambiguity and Perception: How Face-Likeness Affects Breaking Time in Continuous Flash Suppression の実験データを使用する．[[1]](#1)
+
+データは [https://osf.io/jes4u/](url) からダウンロードし，解析を行う．
+提供されるデータは以下のような構造となっている．(3階層以降を省略)
+`Facelikeness/analysis/raw` ディレクトリを当プロジェクトにおける`Report/data/raw` に上書きする．
+
+``` tree
+Facelikeness
+├── 00_CFS_facelikeness_paper.Rproj
+└── analysis
+    ├── analysis_part0.Rmd
+    ~~~
+    ├── analysis_part4_targetID.html
+    ├── function - ~~~
+    ├── processed - ~~~
+    ├── raw <!-- このディレクトリを`Report/data/raw` に上書き -->
+    │   ├── binary.csv
+    │   ├── experiment_main
+    │   ├── experiment_survey
+    │   └── mondrian
+    └── results - ~~~
+```
+
+## 解析スクリプト
+- `Report/analysis` 内の`part_0*.rmd` を編集
+  - `part_01.rmd` : データ整形
+  - `part_02.rmd` : データ可視化
+  - `part_03.rmd` : 統計解析
+
+## レポート (必要であれば)
+- `Report/report.rmd` をコンパイル → レポート化
+  - `/Report/R/_compiler.r` を実行
+
+```r
+source(here("R/_compiler.r"))
+```
+
+# Reference
 <a id="1">[1]</a> Martinsen, M. M. (2024, August 24). Facial Ambiguity and Perception: How Face-Likeness Affects Breaking Time in Continuous Flash Suppression. Retrieved from osf.io/jes4u
