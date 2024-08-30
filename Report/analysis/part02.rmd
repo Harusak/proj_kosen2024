@@ -1,0 +1,222 @@
+## BT をプロットする
+
+```{r}
+colorset = c('Upright'='#EF9873','Inverted'='#73C9EF')
+```
+
+はじめに，異常値を多く含んでいた実験参加者を解析するデータから除外した．
+
+```{r exclude-subject}
+excludeSubID <- readRDS(here("data/processed/excludeSubID.rds"))
+dfRAW <- read.csv(here("data/processed/data.csv"))
+
+dfMain <- dfRAW |>
+  dplyr::filter(!(subID %in% excludeSubID)) |>
+  dplyr::filter(flag == 0 & outlier == 0) |>
+  select(-flag, -outlier)
+```
+
+### BTの基本統計量
+
+本節ではBTの解析を行った結果を示す．
+
+はじめに，各実験について，条件ごとに平均値と標準誤差を算出した．
+表 \@ref(tab:table-BT) に実験条件ごとの平均値と標準誤差を示す．
+
+```{r BT-perSub}
+meanBTperExpAndSub <- dfMain |>
+  group_by(expID, subID, targetCategory) |>
+  summarise(meanBreakTime = mean(breakTime, na.rm = TRUE), .groups = "drop") |>
+  mutate(targetCategory = factor(targetCategory, levels = c("Upright", "Inverted"))) |>
+  mutate(expID = factor(expID, levels = c("Binary", "Gray")))
+
+# 結果を確認
+# head(meanBTperExpAndSub)
+```
+
+```{r table-BT, tab.cap="実験と条件ごとのBTの平均値と標準誤差"}
+# 平均値と標準誤差を計算するための summary_data を作成
+summary_data <- meanBTperExpAndSub %>%
+  group_by(expID, targetCategory) %>%
+  summarise(
+    mean = mean(meanBreakTime),
+    se = sd(meanBreakTime) / sqrt(n()),
+    .groups = 'drop'
+  )
+
+# gtテーブルの作成
+summary_table <- summary_data %>%
+  gt() %>%
+  fmt_number(
+    columns = c(mean, se),
+    decimals = 2
+  ) %>%
+  cols_label(
+    expID = "Experiment",
+    targetCategory = "Orientation",
+    mean = "Mean BT",
+    se = "Standard Error"
+  )
+
+# 表を表示
+saveRDS(summary_table, file = here("data/summary_table.rds"))
+summary_table
+```
+
+図 \@ref(fig:plot-BT) に，各実験条件について実験参加者ごとの平均値とその分布を示す．
+菱形のデータポイントは平均値を，エラーバーは標準誤差を示す．
+
+```{r plot-BT, fig.align='center', fig.cap="各実験条件でのBT", fig.subcap=c("Gray 実験", "Binary 実験"), fig.height=6, fig.width=6, warning=FALSE, out.width='50%'}
+# Binary 実験のデータを取得
+meanBTperExpAndSub_binary <- meanBTperExpAndSub |>
+  filter(expID=="Binary")
+summary_data_binary <- summary_data |>
+  filter(expID=="Binary")
+
+# プロットの作成
+plotBT_binary <- ggplot() +
+
+  # ハーフアイプロット
+  ggdist::stat_halfeye(
+    data = meanBTperExpAndSub_binary,
+    aes(x = targetCategory, y = meanBreakTime, fill = targetCategory),
+    adjust = 0.5,         # バンド幅を調整して滑らかな外観にする
+    width = 0.6,          # ハーフアイプロットの幅
+    justification = -0.5, # プロットを左にシフトする
+    alpha = 0.5,           # 透明度を指定
+    .width = 0,
+    point_colour = NA
+  ) +
+
+  # ボックスプロット
+  geom_boxplot(
+    data = meanBTperExpAndSub_binary,
+    aes(x = targetCategory, y = meanBreakTime, fill = targetCategory),
+    width = 0.12,         # ボックスプロットの幅を狭く設定
+    position = position_nudge(x = 0.1),  # 位置をずらす
+    outlier.shape = NA    # ボックスプロットの外れ値を表示しない
+  ) +
+
+  # ドットプロット
+  ggdist::stat_dots(
+    data = meanBTperExpAndSub_binary,
+    aes(x = targetCategory, y = meanBreakTime, fill = targetCategory),
+    side = "left",        # ドットを両側に表示
+    justification = 1,  # ドットを中央に配置
+    binwidth = 0.15,      # ドットのビン幅
+    colour = "#1c1d2f",   # ドットの枠線の色
+    alpha = 0.7           # 透明度を指定
+  ) +
+
+  geom_line(data = meanBTperExpAndSub_binary,
+            aes(x = targetCategory, y = meanBreakTime, group = interaction(expID, subID)),
+            position = position_dodge(0),
+            alpha = 0.4) +
+
+  # 平均値を菱形でプロット
+  geom_point(
+    data = summary_data_binary,
+    aes(x = targetCategory, y = mean),
+    shape = 18,           # 菱形を指定
+    size = 4,             # サイズを指定
+    position = position_nudge(0.1)
+  ) +
+
+  # エラーバーを追加
+  geom_errorbar(
+    data = summary_data_binary,
+    aes(x = targetCategory, y = mean, ymin = mean - se, ymax = mean + se),
+    width = 0.2,          # エラーバーの幅
+    position = position_nudge(0.1)
+  ) +
+
+  # colorset を使用して fill の色を設定
+  scale_fill_manual(values = colorset) +
+
+  # グラフのテーマ設定
+  theme_apa() +
+  theme(
+    legend.position = "bottom",    # 凡例を下に配置
+    legend.direction = "horizontal" # 凡例を横に並べる
+  )
+
+# ========== ========== ========== ========== ==========
+# Gray 実験のデータを取得
+meanBTperExpAndSub_gray <- meanBTperExpAndSub |>
+  filter(expID=="Gray")
+summary_data_gray <- summary_data |>
+  filter(expID=="Gray")
+
+# プロットの作成
+plotBT_gray <- ggplot() +
+
+  # ハーフアイプロット
+  ggdist::stat_halfeye(
+    data = meanBTperExpAndSub_gray,
+    aes(x = targetCategory, y = meanBreakTime, fill = targetCategory),
+    adjust = 0.5,         # バンド幅を調整して滑らかな外観にする
+    width = 0.6,          # ハーフアイプロットの幅
+    justification = -0.5, # プロットを左にシフトする
+    alpha = 0.5,           # 透明度を指定
+    .width = 0,
+    point_colour = NA
+  ) +
+
+  # ボックスプロット
+  geom_boxplot(
+    data = meanBTperExpAndSub_gray,
+    aes(x = targetCategory, y = meanBreakTime, fill = targetCategory),
+    width = 0.12,         # ボックスプロットの幅を狭く設定
+    position = position_nudge(x = 0.1),  # 位置をずらす
+    outlier.shape = NA    # ボックスプロットの外れ値を表示しない
+  ) +
+
+  # ドットプロット (煩雑になったため除外)
+  ggdist::stat_dots(
+    data = meanBTperExpAndSub_gray,
+    aes(x = targetCategory, y = meanBreakTime, fill = targetCategory),
+    side = "left",        # ドットを両側に表示
+    justification = 1,  # ドットを中央に配置
+    binwidth = 0.15,      # ドットのビン幅
+    colour = "#1c1d2f",   # ドットの枠線の色
+    alpha = 0.7           # 透明度を指定
+  ) +
+
+  geom_line(data = meanBTperExpAndSub_gray,
+            aes(x = targetCategory, y = meanBreakTime, group = interaction(expID, subID)),
+            position = position_dodge(0),
+            alpha = 0.4) +
+
+  # 平均値を菱形でプロット
+  geom_point(
+    data = summary_data_gray,
+    aes(x = targetCategory, y = mean),
+    shape = 18,           # 菱形を指定
+    size = 4,             # サイズを指定
+    position = position_nudge(x = 0.1),  # 位置をずらす
+  ) +
+
+  # エラーバーを追加
+  geom_errorbar(
+    data = summary_data_gray,
+    aes(x = targetCategory, y = mean, ymin = mean - se, ymax = mean + se),
+    width = 0.2,          # エラーバーの幅
+    position = position_nudge(x = 0.1),  # 位置をずらす
+  ) +
+
+  # colorset を使用して fill の色を設定
+  scale_fill_manual(values = colorset) +
+
+  # グラフのテーマ設定
+  theme_apa() +
+  theme(
+    legend.position = "bottom",    # 凡例を下に配置
+    legend.direction = "horizontal" # 凡例を横に並べる
+  )
+
+saveRDS(plotBT_gray, file = here("data/plotBT_gray.rds"))
+saveRDS(plotBT_binary, file = here("data/plotBT_binary.rds"))
+plotBT_gray
+plotBT_binary
+```
+

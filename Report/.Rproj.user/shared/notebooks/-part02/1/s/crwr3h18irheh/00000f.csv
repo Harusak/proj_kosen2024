@@ -1,0 +1,7 @@
+"0","excludeSubID <- readRDS(here(""data/processed/excludeSubID.rds""))"
+"0","dfRAW <- read.csv(here(""data/processed/data.csv""))"
+"0",""
+"0","dfMain <- dfRAW |>"
+"0","  dplyr::filter(!(subID %in% excludeSubID)) |>"
+"0","  dplyr::filter(flag == 0 & outlier == 0) |>"
+"0","  select(-flag, -outlier)"

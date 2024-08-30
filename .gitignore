@@ -1,0 +1,10 @@
+/Report/data/*
+!/Report/data/processed/
+!/Report/data/sample/
+!/Report/data/raw/
+!/Report/data/raw/**
+
+/Report/report_files
+
+/Report/report.*
+!/Report/report.rmd

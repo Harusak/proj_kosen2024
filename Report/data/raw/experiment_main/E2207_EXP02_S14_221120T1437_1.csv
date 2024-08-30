@@ -1,0 +1,81 @@
+expID,subID,eye,trialID,month,date,targetCategory,targetID,quadrant,breakTime,breakContrast,ans,see
+2,14,Left,1,11,20,Upright,8,1,999,1,FALSE,Dont see
+2,14,Left,1,11,20,Inverted,32,2,1.6733677,0.34,TRUE,See
+2,14,Left,1,11,20,Upright,13,1,4.8704054,0.96,TRUE,See
+2,14,Left,1,11,20,Upright,1,2,5.3110364,1,TRUE,See
+2,14,Left,1,11,20,Upright,19,1,11.3411528,1,TRUE,See
+2,14,Left,1,11,20,Inverted,25,2,5.4316398,1,TRUE,See
+2,14,Left,1,11,20,Upright,1,1,4.4734036,0.88,TRUE,See
+2,14,Left,1,11,20,Upright,12,1,4.2378386,0.84,TRUE,See
+2,14,Left,1,11,20,Upright,18,2,5.4476105,1,TRUE,See
+2,14,Left,1,11,20,Inverted,38,1,8.4120733,1,TRUE,See
+2,14,Left,1,11,20,Inverted,30,2,3.6005452,0.72,TRUE,See
+2,14,Left,1,11,20,Upright,15,2,6.3261391,1,TRUE,See
+2,14,Left,1,11,20,Inverted,35,2,3.4551037,0.68,TRUE,See
+2,14,Left,1,11,20,Upright,16,1,999,1,FALSE,Dont see
+2,14,Left,1,11,20,Inverted,21,2,2.6292573,0.52,TRUE,See
+2,14,Left,1,11,20,Upright,7,1,999,1,FALSE,Dont see
+2,14,Left,1,11,20,Upright,14,2,3.7528368,0.74,TRUE,See
+2,14,Left,1,11,20,Inverted,31,1,8.2558852,1,TRUE,See
+2,14,Left,1,11,20,Inverted,30,1,6.3076022,1,TRUE,See
+2,14,Left,1,11,20,Inverted,36,1,999,1,FALSE,Dont see
+2,14,Left,1,11,20,Inverted,27,1,999,1,FALSE,Dont see
+2,14,Left,1,11,20,Inverted,33,2,2.3685394,0.48,TRUE,See
+2,14,Left,1,11,20,Upright,5,1,9.9551668,1,TRUE,See
+2,14,Left,1,11,20,Upright,18,1,9.4381609,1,TRUE,See
+2,14,Left,1,11,20,Upright,15,1,10.1283596,1,TRUE,See
+2,14,Left,1,11,20,Upright,19,2,7.6851766,1,TRUE,See
+2,14,Left,1,11,20,Inverted,22,2,3.977607,0.78,TRUE,See
+2,14,Left,1,11,20,Upright,7,2,5.1118035,1,TRUE,See
+2,14,Left,1,11,20,Upright,8,2,5.2476925,1,TRUE,See
+2,14,Left,1,11,20,Inverted,40,1,5.912983,1,TRUE,See
+2,14,Left,1,11,20,Upright,14,1,5.2356215,1,TRUE,See
+2,14,Left,1,11,20,Inverted,29,1,7.9595498,1,TRUE,See
+2,14,Left,1,11,20,Upright,9,1,8.9244341,1,TRUE,See
+2,14,Left,1,11,20,Inverted,31,2,5.7707147,1,TRUE,See
+2,14,Left,1,11,20,Inverted,36,2,3.6290934,0.72,TRUE,See
+2,14,Left,1,11,20,Upright,4,2,4.5546671,0.9,TRUE,See
+2,14,Left,1,11,20,Inverted,22,1,5.5440375,1,TRUE,See
+2,14,Left,1,11,20,Inverted,24,2,4.3318101,0.86,TRUE,See
+2,14,Left,1,11,20,Inverted,39,1,8.6771014,1,TRUE,See
+2,14,Left,1,11,20,Inverted,35,1,14.2687403,1,TRUE,See
+2,14,Left,1,11,20,Inverted,28,1,7.3505192,1,TRUE,See
+2,14,Left,1,11,20,Inverted,37,2,4.2087358,0.84,TRUE,See
+2,14,Left,1,11,20,Upright,12,2,3.3212381,0.66,TRUE,See
+2,14,Left,1,11,20,Upright,3,2,2.7211003,0.54,TRUE,See
+2,14,Left,1,11,20,Inverted,34,2,2.8563904,0.56,TRUE,See
+2,14,Left,1,11,20,Upright,2,1,5.1211689,1,TRUE,See
+2,14,Left,1,11,20,Inverted,29,2,2.4740509,0.5,TRUE,See
+2,14,Left,1,11,20,Inverted,21,1,5.4771506,1,TRUE,See
+2,14,Left,1,11,20,Upright,3,1,3.9860565,0.78,TRUE,See
+2,14,Left,1,11,20,Upright,10,1,3.4079394,0.68,TRUE,See
+2,14,Left,1,11,20,Upright,5,2,4.6263446,0.92,TRUE,See
+2,14,Left,1,11,20,Upright,20,2,2.8847033,0.58,TRUE,See
+2,14,Left,1,11,20,Upright,6,1,999,1,FALSE,Dont see
+2,14,Left,1,11,20,Upright,4,1,6.822202,1,TRUE,See
+2,14,Left,1,11,20,Upright,9,2,5.7591051,1,TRUE,See
+2,14,Left,1,11,20,Upright,20,1,6.3890569,1,TRUE,See
+2,14,Left,1,11,20,Inverted,26,2,4.214881,0.84,TRUE,See
+2,14,Left,1,11,20,Inverted,32,1,4.6950567,0.92,TRUE,See
+2,14,Left,1,11,20,Inverted,33,1,999,1,FALSE,Dont see
+2,14,Left,1,11,20,Inverted,27,2,4.9551463,0.98,TRUE,See
+2,14,Left,1,11,20,Inverted,25,1,6.090126,1,TRUE,See
+2,14,Left,1,11,20,Upright,17,2,3.4796939,0.68,TRUE,See
+2,14,Left,1,11,20,Upright,17,1,3.9792707,0.78,TRUE,See
+2,14,Left,1,11,20,Upright,10,2,3.4249203,0.68,TRUE,See
+2,14,Left,1,11,20,Inverted,23,2,2.3001325,0.46,TRUE,See
+2,14,Left,1,11,20,Upright,6,2,2.6690778,0.54,TRUE,See
+2,14,Left,1,11,20,Inverted,40,2,2.3423267,0.46,TRUE,See
+2,14,Left,1,11,20,Upright,13,2,2.7112283,0.54,TRUE,See
+2,14,Left,1,11,20,Upright,16,2,3.4840271,0.68,TRUE,See
+2,14,Left,1,11,20,Inverted,23,1,13.0419798,1,TRUE,See
+2,14,Left,1,11,20,Inverted,34,1,5.7996325,1,TRUE,See
+2,14,Left,1,11,20,Inverted,24,1,4.6455106,0.92,TRUE,See
+2,14,Left,1,11,20,Inverted,28,2,6.7903711,1,TRUE,See
+2,14,Left,1,11,20,Upright,11,1,6.5063218,1,TRUE,See
+2,14,Left,1,11,20,Upright,2,2,5.3459143,1,TRUE,See
+2,14,Left,1,11,20,Upright,11,2,3.1404625,0.62,TRUE,See
+2,14,Left,1,11,20,Inverted,39,2,3.8664663,0.76,TRUE,See
+2,14,Left,1,11,20,Inverted,38,2,2.7394785,0.54,TRUE,See
+2,14,Left,1,11,20,Inverted,26,1,999,1,FALSE,Dont see
+2,14,Left,1,11,20,Inverted,37,1,5.0222877,0.98,TRUE,See

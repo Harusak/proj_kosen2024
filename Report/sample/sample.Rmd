@@ -1,0 +1,133 @@
+# ダイナマイトプロットからの解脱
+author: Sakaguchi Haruki  
+reference: https://simplystatistics.org/posts/2019-02-21-dynamite-plots-must-die/
+
+``` {r setup}
+listOfLibraries <- c(
+  "tidyverse",
+  "ggplot2", 
+  "ggdist"
+)
+
+
+for(lib in listOfLibraries){
+  if (!require(lib, character.only = TRUE)) {
+    install.packages(lib)
+    library(lib, character.only = TRUE)
+  } else {
+    library(lib, character.only = TRUE)
+  }
+}
+```
+
+``` {r genData}
+set.seed(0)
+n <- 10
+cases <- rnorm(n, log2(64), 0.25)
+controls <- rnorm(n, log2(64), 0.25)
+cases <- 2^(cases)
+controls <- 2^(controls)
+cases[1:2] <- c(110, 150) #introduce outliers
+dat <- data.frame(x = factor(rep(c("Controls", "Cases"), each = n), 
+                             levels = c("Controls", "Cases")),
+                             Outcome = c(controls, cases))
+head(dat)
+str(dat)
+saveRDS(dat, file = here("data/sample/dat.rds"))
+```
+
+## 棒グラフ＋エラーバー＝ダイナマイトプロット
+
+``` {r dynamite-plot}
+summary <- dat %>%
+  group_by(x) %>%
+  summarise(
+    Mean = mean(Outcome),
+    SE = sd(Outcome) / sqrt(n())
+  )
+
+dynamite <- ggplot(data = summary, aes(x = x, y = Mean)) +
+  geom_bar(stat = "identity", fill = "skyblue", color = "black", width = 0.6) +
+  geom_errorbar(aes(ymin = Mean - SE, ymax = Mean + SE), width = 0.2) +
+  theme_minimal()
+
+dynamite
+```
+
+## 代わりに何をすべきか？
+
+### 1. データポイントをプロットする
+
+``` {r dataPointPlot}
+plot_point <- ggplot(data = dat, aes(x, Outcome)) +
+  ggdist::stat_dots(
+    side = "both",        # ドットを両側に表示
+    justification = 0.5,  # ドットを中央に配置
+    binwidth = 3,      # ドットのビン幅
+    alpha = 0.8           # 透明度を指定
+    ) +
+  theme_minimal()
+
+plot_point
+```
+
+### 2. 箱ひげ図を活用する
+箱ひげ図によって四分位を表すことができる．
+
+``` {r boxPlot}
+plot_boxplot <- ggplot(data = dat, aes(x, Outcome)) +
+  geom_boxplot(width = 0.5) +
+  ggdist::stat_dots(
+    side = "both",        # ドットを両側に表示
+    justification = 0.5,  # ドットを中央に配置
+    binwidth = 3,      # ドットのビン幅
+    alpha = 0.8           # 透明度を指定
+    ) +
+  theme_minimal()
+
+plot_boxplot
+```
+
+### 3. リッジプロットを活用する
+
+``` {r}
+plot_ridge <- ggplot(data = dat, aes(x, Outcome)) +
+  ggdist::stat_halfeye(
+    adjust = 0.5,         # バンド幅を調整して滑らかな外観にする
+    # width = 0.6,          # ハーフアイプロットの幅
+    # justification = -0.3, # プロットを左にシフトする
+    alpha = 0.5,           # 透明度を指定
+    .width = 0,
+    point_colour = NA
+  ) +
+  theme_minimal()
+
+plot_ridge
+```
+
+### 4. Advance: 上記3つのグラフを組み合わせる
+
+```{r}
+plot_combined <- ggplot(data = dat, aes(x, Outcome)) +
+  geom_boxplot(
+    width = 0.25,
+    outlier.shape = NA,
+  ) +
+  ggdist::stat_dots(
+    side = "left",        # ドットを両側に表示
+    justification = 1.2,  # ドットを中央に配置
+    binwidth = 3,      # ドットのビン幅
+    alpha = 0.8,           # 透明度を指定
+    ) +
+  ggdist::stat_halfeye(
+    adjust = 0.5,         # バンド幅を調整して滑らかな外観にする
+    width = 0.5,          # ハーフアイプロットの幅
+    justification = -0.35, # プロットを左にシフトする
+    alpha = 0.5,           # 透明度を指定
+    .width = 0,
+    point_colour = NA
+  ) +
+  theme_minimal()
+
+plot_combined
+```

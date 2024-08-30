@@ -1,0 +1,8 @@
+"0","meanBTperExpAndSub <- dfMain |>"
+"0","  group_by(expID, subID, targetCategory) |>"
+"0","  summarise(meanBreakTime = mean(breakTime, na.rm = TRUE), .groups = ""drop"") |>"
+"0","  mutate(targetCategory = factor(targetCategory, levels = c(""Upright"", ""Inverted""))) |>"
+"0","  mutate(expID = factor(expID, levels = c(""Binary"", ""Gray"")))"
+"0",""
+"0","# 結果を確認"
+"0","# head(meanBTperExpAndSub)"

@@ -1,0 +1,170 @@
+---
+# title: "高専実習レポート"
+output:
+  bookdown::pdf_document2:
+    toc: false
+    latex_engine: xelatex
+    number_sections: true
+    citation_package: natbib
+    keep_md: true
+    extra_dependencies:
+      - "float"
+      - "flafter"
+      - "subfig"
+    includes:
+      in_header: etc/_preamble.tex
+bibliography: etc/ref.bib
+biblio-style: unsrt
+# documentclass: book
+classoption:
+  - a4paper,12ptj,ja=standard
+---
+
+\input{./etc/title}
+
+\pagenumbering{roman}
+
+\tableofcontents
+\newpage
+
+\setcounter{page}{1}
+\pagenumbering{arabic}
+
+```{r setup, include=FALSE}
+# Latex エンジンの選択
+options(tinytex.engine = 'xelatex')
+
+# CRAN の定義とhere パッケージのインストール
+options(repos = list(CRAN="http://cran.rstudio.com/"))
+install.packages("here")
+library(here)
+
+# ライブラリ群の読み込み
+source(here("R/_init.r"))
+
+# チャンクオプション
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(fig.pos = "!h", out.extra = "")
+
+# パッケージコンフリクトの解決
+conflicts_prefer(dplyr::filter)
+conflicts_prefer(papaja::theme_apa)
+
+colorset = c('Upright'='#EF9873','Inverted'='#73C9EF')
+```
+
+# 実習プログラム日程 {-}
+
+**1日目 : オリエンテーションと実験準備**
+
+  - 11:00-12:00: 研究室紹介と実習内容の説明
+  - 12:00-13:00: 昼食
+  - 13:00-14:30: 心理物理実験と連続フラッシュ抑制 (CFS) 実験の理論講義
+  - 14:30-17:00: 実験実施 (被験者として参加)
+
+**2日目 : データ解析**
+
+  - 9:30-10:30: データ解析ツールの紹介と基本操作
+  - 10:30-12:00: 実験データの整形
+  - 12:00-13:00: 昼食
+  - 13:00-16:30: 抑制時間 (BT) の解析 (統計解析，視覚化)
+
+**3日目 : 解析結果の考察とレポート作成**
+
+  - 9:30-12:00: 解析結果の考察とディスカッション
+  - 12:00-13:00: 昼食
+  - 13:00-16:30: レポート作成 (解析手法，結果，考察)
+
+**4日目 : プレゼンテーションの作成**
+
+  - 9:30-12:00: プレゼンテーション準備
+  - 12:00-13:00: 昼食
+  - 13:00-15:00: プレゼンテーション準備
+  - 15:00-16:30: フィードバック
+
+**5日目 : プレゼンテーションとフィードバック**
+
+  - 9:30-10:00: プレゼンテーション準備
+  - 10:00-10:30: プレゼンテーション発表
+  - 10:30-11:00: フィードバックと総括
+
+\newpage
+
+<!--
+    1日目 : オリエンテーションと実験
+-->
+# 実習の目的
+本実習は，心理物理学実験における理論と実践の両面を深く理解し，将来的な研究活動に役立てることを目的とする．
+
+心理物理学は，人間の感覚と物理的刺激の関係を探る学問であり，正確な実験手法が求められる．
+心理物理学実験の基本的な手法や注意点についての知識を学び，理論的な基礎を築く．
+
+次に，実際の心理物理学実験を通じて，理論を実践する．
+具体的には，CFS（Continuous Flash Suppression）実験を実施し，実験参加者としての体験と，実験実施者としての経験する．
+これにより，実験の運営方法やデータ収集の流れを実際に体験し，実践的なスキルを習得する．
+
+さらに，心理物理学実験の結果を適切に解釈するための基礎的な統計知識を習得する．
+Rという統計用ソフトウェアを用いて，実験データの解析を行い，結果を解釈するための能力を養う．
+これにより，データに基づいた科学的な結論を導くスキルを身につけ，心理物理学実験における包括的な理解を深める．
+
+これらの学習と体験を通じて，心理物理学実験に関する理論的知識を得ることで，今後の研究などの場において役立つ基盤を構築することを目指す．
+
+# 原理
+
+## 連続フラッシュ抑制 (Continuous Flash Suppression: CFS)
+CFS とは，短い周期で激しく変化する刺激を抑制刺激として片目に呈示した際に，もう片方の目に呈示された刺激が長時間知覚に上らなくなる現象である \cite{Tsuchiya2005}．
+
+## bCFS (breaking Continuous Flash Suppression)
+bCFS とは，CFS を用いた実験手法の一つで，CFS 下で徐々に不透明度が増加する実験対象刺激が，マスク刺激の抑制を突破して意識に上るまでの時間を計測する実験手法である \cite{Pournaghdali2020}．
+この実験対象刺激が意識に上るまでの時間を抑制突破時間 (Breakthrough Time: BT) と呼び，実験対象刺激の無意識下処理における優位性の指標として用いられている．
+多くのbCFS パラダイムでは，抑制突破を検出するために，実験対象刺激が画面のどこにあるのかを応答させるタスクが採用されている．
+例えば，正立した顔が倒立した顔よりも早く抑制突破する場合，正立顔は倒立顔よりも無意識下で処理されやすいことが示される．
+
+# 実験
+
+- 顔刺激正立倒立実験を体験
+- 既成データから解析・基礎的なグラフから情報量の多いグラフを作ろう！
+  - t test
+  - 棒グラフ
+  - SE
+  - raincloudみたいな
+  - 刺激別の解析
+- 実験データの解析は
+- 論文の見かた，調べかた(できれば)
+- 報告する方法を学ぶ
+
+## 実験目的
+
+## 実験手順
+
+<!--
+    2日目 : 実験データの解析
+-->
+# 統計解析
+
+本パートでは，Rを用いて既成データの解析を行った結果を示す．
+解析用データは，Michael Makoto Martinsen によってOpen Science Framework (OSF) に公開されている，Facial Ambiguity and Perception: How Face-Likeness Affects Breaking Time in Continuous Flash Suppression での実験データを用いた \cite{MichaelOSF}．
+
+<!-- 解析ファイルの読み込み -->
+<!-- part01 -->
+```{r child="analysis/part01.rmd"}
+```
+
+<!-- part02 -->
+```{r child="analysis/part02.rmd"}
+```
+
+<!-- part03 -->
+```{r child="analysis/part03.rmd"}
+```
+
+<!--
+    3日目
+-->
+# 考察
+
+## 解析結果の考察
+
+\newpage
+
+# 参考文献 {-}

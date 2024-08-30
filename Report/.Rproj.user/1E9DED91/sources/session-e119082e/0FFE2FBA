@@ -1,0 +1,28 @@
+{
+    "id": "0FFE2FBA",
+    "path": "/Volumes/Public/sakaguchi22/proj_kousen2024/Report/sample/sample.Rmd",
+    "project_path": "sample/sample.Rmd",
+    "type": "r_markdown",
+    "hash": "2813072999",
+    "contents": "",
+    "dirty": false,
+    "created": 1724740469329.0,
+    "source_on_save": false,
+    "relative_order": 6,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "12,0",
+        "scrollLine": "0",
+        "marks": "<:20,0\n>:20,0",
+        "last_setup_crc32": "e119082e3708c2b7"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1724986823,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1724986823724,
+    "read_only": false,
+    "read_only_alternatives": []
+}

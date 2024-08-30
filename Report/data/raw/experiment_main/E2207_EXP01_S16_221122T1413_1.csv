@@ -1,0 +1,81 @@
+expID,subID,eye,trialID,month,date,targetCategory,targetID,quadrant,breakTime,breakContrast,ans,see
+1,16,Right,1,11,22,Upright,5,1,999,1,FALSE,Dont see
+1,16,Right,1,11,22,Upright,15,1,999,1,FALSE,Dont see
+1,16,Right,1,11,22,Upright,4,1,999,1,FALSE,Dont see
+1,16,Right,1,11,22,Inverted,39,2,999,1,FALSE,Dont see
+1,16,Right,1,11,22,Upright,3,1,999,1,FALSE,See
+1,16,Right,1,11,22,Upright,17,1,11.6301426,1,TRUE,See
+1,16,Right,1,11,22,Inverted,37,1,7.6837659,1,TRUE,See
+1,16,Right,1,11,22,Upright,9,2,5.3380579,1,TRUE,See
+1,16,Right,1,11,22,Upright,12,1,3.6271754,0.72,TRUE,See
+1,16,Right,1,11,22,Upright,16,2,999,1,FALSE,Dont see
+1,16,Right,1,11,22,Upright,11,1,5.7630658,1,TRUE,See
+1,16,Right,1,11,22,Upright,17,2,999,1,FALSE,Dont see
+1,16,Right,1,11,22,Inverted,23,2,999,1,FALSE,Dont see
+1,16,Right,1,11,22,Upright,6,1,999,1,FALSE,Dont see
+1,16,Right,1,11,22,Inverted,36,2,999,1,FALSE,Dont see
+1,16,Right,1,11,22,Upright,18,1,999,1,FALSE,Dont see
+1,16,Right,1,11,22,Upright,14,2,999,1,FALSE,See
+1,16,Right,1,11,22,Inverted,26,1,999,1,FALSE,Dont see
+1,16,Right,1,11,22,Upright,3,2,5.4796558,1,TRUE,See
+1,16,Right,1,11,22,Upright,20,2,5.0657691,1,TRUE,See
+1,16,Right,1,11,22,Inverted,31,2,5.201359,1,TRUE,See
+1,16,Right,1,11,22,Inverted,32,2,1.9637403,0.4,TRUE,See
+1,16,Right,1,11,22,Inverted,29,2,9.2288088,1,TRUE,See
+1,16,Right,1,11,22,Inverted,27,1,4.473806,0.88,TRUE,See
+1,16,Right,1,11,22,Inverted,29,1,5.0371619,1,TRUE,See
+1,16,Right,1,11,22,Upright,10,1,2.6462628,0.52,TRUE,See
+1,16,Right,1,11,22,Upright,19,1,7.2361954,1,TRUE,See
+1,16,Right,1,11,22,Upright,8,1,1.721393,0.34,TRUE,See
+1,16,Right,1,11,22,Inverted,30,1,6.0108411,1,TRUE,See
+1,16,Right,1,11,22,Inverted,22,1,3.8715268,0.76,TRUE,See
+1,16,Right,1,11,22,Inverted,37,2,2.951696,0.58,TRUE,See
+1,16,Right,1,11,22,Inverted,25,2,2.8616398,0.56,TRUE,See
+1,16,Right,1,11,22,Inverted,31,1,2.8183476,0.56,TRUE,See
+1,16,Right,1,11,22,Inverted,38,2,2.310598,0.46,TRUE,See
+1,16,Right,1,11,22,Inverted,23,1,2.1609613,0.44,TRUE,See
+1,16,Right,1,11,22,Inverted,21,2,3.5908257,0.7,TRUE,See
+1,16,Right,1,11,22,Inverted,34,1,3.6262575,0.72,TRUE,See
+1,16,Right,1,11,22,Upright,16,1,9.2579088,1,TRUE,See
+1,16,Right,1,11,22,Upright,2,1,5.1839821,1,TRUE,See
+1,16,Right,1,11,22,Inverted,33,2,2.4246282,0.48,TRUE,See
+1,16,Right,1,11,22,Inverted,25,1,2.3191138,0.46,TRUE,See
+1,16,Right,1,11,22,Inverted,24,2,3.9164161,0.78,TRUE,See
+1,16,Right,1,11,22,Inverted,27,2,2.079324,0.42,TRUE,See
+1,16,Right,1,11,22,Upright,5,2,2.6486639,0.52,TRUE,See
+1,16,Right,1,11,22,Inverted,28,1,2.0579178,0.42,TRUE,See
+1,16,Right,1,11,22,Inverted,30,2,2.1719569,0.44,TRUE,See
+1,16,Right,1,11,22,Inverted,34,2,1.969672,0.4,TRUE,See
+1,16,Right,1,11,22,Upright,6,2,3.7474274,0.74,TRUE,See
+1,16,Right,1,11,22,Upright,19,2,2.4231081,0.48,TRUE,See
+1,16,Right,1,11,22,Inverted,38,1,3.1283897,0.62,TRUE,See
+1,16,Right,1,11,22,Upright,2,2,3.6623872,0.72,TRUE,See
+1,16,Right,1,11,22,Inverted,35,1,3.1766253,0.62,TRUE,See
+1,16,Right,1,11,22,Upright,7,1,2.1778846,0.44,TRUE,See
+1,16,Right,1,11,22,Inverted,22,2,2.7257285,0.54,TRUE,See
+1,16,Right,1,11,22,Upright,13,1,2.9546777,0.58,TRUE,See
+1,16,Right,1,11,22,Inverted,40,2,2.4846951,0.5,TRUE,See
+1,16,Right,1,11,22,Inverted,32,1,1.969896,0.4,TRUE,See
+1,16,Right,1,11,22,Upright,1,2,3.0438196,0.6,TRUE,See
+1,16,Right,1,11,22,Inverted,21,1,3.2928896,0.66,TRUE,See
+1,16,Right,1,11,22,Upright,7,2,1.4199121,0.28,TRUE,See
+1,16,Right,1,11,22,Upright,12,2,1.7140754,0.34,TRUE,See
+1,16,Right,1,11,22,Upright,13,2,3.7245243,0.74,TRUE,See
+1,16,Right,1,11,22,Upright,9,1,3.8686679,0.76,TRUE,See
+1,16,Right,1,11,22,Upright,11,2,1.776037,0.36,TRUE,See
+1,16,Right,1,11,22,Inverted,35,2,3.7614221,0.74,TRUE,See
+1,16,Right,1,11,22,Upright,15,2,3.8052042,0.76,TRUE,See
+1,16,Right,1,11,22,Upright,4,2,4.5391473,0.9,TRUE,See
+1,16,Right,1,11,22,Upright,20,1,2.3550535,0.46,TRUE,See
+1,16,Right,1,11,22,Inverted,26,2,7.9112173,1,TRUE,See
+1,16,Right,1,11,22,Upright,1,1,6.5326828,1,TRUE,See
+1,16,Right,1,11,22,Inverted,36,1,6.570262,1,TRUE,See
+1,16,Right,1,11,22,Upright,10,2,10.1771054,1,TRUE,See
+1,16,Right,1,11,22,Upright,8,2,1.8496277,0.38,TRUE,See
+1,16,Right,1,11,22,Inverted,39,1,1.7550871,0.36,TRUE,See
+1,16,Right,1,11,22,Upright,14,1,3.7461756,0.74,TRUE,See
+1,16,Right,1,11,22,Inverted,33,1,5.7784917,1,TRUE,See
+1,16,Right,1,11,22,Inverted,28,2,4.3332841,0.86,TRUE,See
+1,16,Right,1,11,22,Upright,18,2,6.8990529,1,TRUE,See
+1,16,Right,1,11,22,Inverted,24,1,5.8968538,1,TRUE,See
+1,16,Right,1,11,22,Inverted,40,1,2.6630277,0.52,TRUE,See

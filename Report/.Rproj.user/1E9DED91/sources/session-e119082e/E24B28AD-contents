@@ -1,0 +1,174 @@
+## BT の統計的検定
+本節では，各実験について，Upright 条件とInverted 条件のBTに差があるか検定を行った結果を示す．
+
+### Binary 実験のBTの検定
+本節では，Binary 実験のUpright とInverted 条件のBTについて対応ありt検定を実施した結果を示す．
+
+はじめに，実験データの正規性の仮定を検定を行った．
+
+```{r shapiro-test-binary}
+binaryBTperSub <- meanBTperExpAndSub |>
+  filter(expID == "Binary") |>
+  pivot_wider(names_from = targetCategory, values_from = meanBreakTime)
+
+# Shapiro-Wilk test on Binary Upright BT
+shapiroBinaryUp <- apa_print(
+  shapiro.test(binaryBTperSub$Upright)
+)
+
+# Shapiro-Wilk test on Binary Inverted BT
+shapiroBinaryInv <- apa_print(
+  shapiro.test(binaryBTperSub$Inverted)
+)
+
+# 条件分岐によるテキストの生成
+if (shapiroBinaryUp$table$p.value == "< .001") {
+  text_shapiro_result_Bup <- "正規分布に従わない"
+} else if (as.numeric(shapiroBinaryUp$table$p.value) > 0.05) {
+  text_shapiro_result_Bup <- "正規分布に従う"
+} else {
+  text_shapiro_result_Bup <- "正規分布に従わない"
+}
+
+if (shapiroBinaryInv$table$p.value == "< .001") {
+  text_shapiro_result_Binv <- "正規分布に従わない"
+} else if (as.numeric(shapiroBinaryInv$table$p.value) > 0.05) {
+  text_shapiro_result_Binv <- "正規分布に従う"
+} else {
+  text_shapiro_result_Binv <- "正規分布に従わない"
+}
+```
+
+シャピロ・ウィルク検定の結果，Upright 条件では`r text_shapiro_result_Bup`ことが明らかとなった (`r shapiroBinaryUp$full_result`)．
+また，Inverted 条件では`r text_shapiro_result_Binv`ことが明らかとなった (`r shapiroBinaryInv$full_result`)．
+
+次に，データが等分散であるか検定を行った．
+
+```{r levene-test-binary}
+binaryBTperSub <- meanBTperExpAndSub |>
+  filter(expID == "Binary")
+
+leveneBinary <- apa_print(
+  leveneTest(meanBreakTime ~ targetCategory, binaryBTperSub)
+)
+
+if (leveneBinary$table$p.value == "< .001") {
+  text_levene_result_binary <- "等分散性が仮定できない"
+} else if (as.numeric(leveneBinary$table$p.value) > 0.05) {
+  text_levene_result_binary <- "等分散性が仮定できる"
+} else {
+  text_levene_result_binary <- "等分散性が仮定できない"
+}
+```
+
+ルービン検定の結果，`r text_levene_result_binary` (`r leveneBinary$full_result`)．
+
+次にBinary 実験のUpright 条件とInverted 条件の2群間に差があるか対応ありt検定を行った．
+
+``` {r pttest-binary}
+# Get Binary BT data only and convert the dataframe to wide
+binaryBTperSub <- meanBTperExpAndSub |>
+  filter(expID == "Binary") |>
+  pivot_wider(names_from = targetCategory, values_from = meanBreakTime)
+
+# conduct a paired t-test
+ttestBinary <- apa_print(
+  t.test(binaryBTperSub$Inverted, binaryBTperSub$Upright, paired = TRUE)
+)
+
+if (ttestBinary$table$p.value == "< .001") {
+  text_ttest_result_binary <- "有意な差が認められた"
+} else if (as.numeric(ttestBinary$table$p.value) > 0.05) {
+  text_ttest_result_binary <- "有意な差は認められなかった"
+} else {
+  text_ttest_result_binary <- "有意な差が認められた"
+}
+```
+
+対応ありt検定の結果，呈示条件間に`r text_ttest_result_binary` (`r ttestBinary$full_result`)．
+
+### Gray 実験のBTの検定
+本節では，Gray 実験のUpright とInverted 条件のBTについて対応ありt検定を実施した結果を示す．
+
+はじめに，実験データの正規性の仮定を検定を行った．
+
+```{r shapiro-test-gray}
+grayBTperSub <- meanBTperExpAndSub |>
+  filter(expID == "Gray") |>
+  pivot_wider(names_from = targetCategory, values_from = meanBreakTime)
+
+# Shapiro-Wilk test on Gray Upright BT
+shapiroGrayUp <- apa_print(
+  shapiro.test(grayBTperSub$Upright)
+)
+
+# Shapiro-Wilk test on Gray Inverted BT
+shapiroGrayInv <- apa_print(
+  shapiro.test(grayBTperSub$Inverted)
+)
+
+# 条件分岐によるテキストの生成
+if (shapiroGrayUp$table$p.value == "< .001") {
+  text_shapiro_result_Gray_Up <- "正規分布に従わない"
+} else if (as.numeric(shapiroGrayUp$table$p.value) > 0.05) {
+  text_shapiro_result_Gray_Up <- "正規分布に従う"
+} else {
+  text_shapiro_result_Gray_Up <- "正規分布に従わない"
+}
+
+if (shapiroGrayInv$table$p.value == "< .001") {
+  text_shapiro_result_Gray_Inv <- "正規分布に従わない"
+} else if (as.numeric(shapiroGrayInv$table$p.value) > 0.05) {
+  text_shapiro_result_Gray_Inv <- "正規分布に従う"
+} else {
+  text_shapiro_result_Gray_Inv <- "正規分布に従わない"
+}
+```
+
+シャピロ・ウィルク検定の結果，Upright 条件では`r text_shapiro_result_Gray_Up`ことが明らかとなった (`r shapiroGrayUp$full_result`)．
+また，Inverted 条件では`r text_shapiro_result_Gray_Inv`ことが明らかとなった (`r shapiroGrayInv$full_result`)．
+
+次に，データが等分散であるか検定を行った．
+
+```{r levene-test-gray}
+grayBTperSub <- meanBTperExpAndSub |>
+  filter(expID == "Gray")
+
+leveneGray <- apa_print(
+  leveneTest(meanBreakTime ~ targetCategory, grayBTperSub)
+)
+
+if (leveneGray$table$p.value == "< .001>") {
+  text_levene_result_gray <- "等分散性が仮定できない"
+} else if (as.numeric(leveneGray$table$p.value) > 0.05) {
+  text_levene_result_gray <- "等分散性が仮定できる"
+} else {
+  text_levene_result_gray <- "等分散性が仮定できない"
+}
+```
+
+ルービン検定の結果，`r text_levene_result_gray` (`r leveneGray$full_result`)．
+
+次にGray 実験のUpright 条件とInverted 条件の2群間に差があるか対応ありt検定を行った．
+
+``` {r pttest-gray}
+# Get Gray BT data only and convert the dataframe to wide
+grayBTperSub <- meanBTperExpAndSub |>
+  filter(expID == "Gray") |>
+  pivot_wider(names_from = targetCategory, values_from = meanBreakTime)
+
+# conduct a paired t-test
+ttestGray <- apa_print(
+  t.test(grayBTperSub$Inverted, grayBTperSub$Upright, paired = TRUE)
+)
+
+if (ttestGray$table$p.value == "< .001") {
+  text_ttest_result_gray <- "有意な差が認められた"
+} else if (as.numeric(ttestGray$table$p.value) > 0.05) {
+  text_ttest_result_gray <- "有意な差は認められなかった"
+} else {
+  text_ttest_result_gray <- "有意な差が認められた"
+}
+```
+
+対応ありt検定の結果，呈示条件間に`r text_ttest_result_gray` (`r ttestGray$full_result`)．

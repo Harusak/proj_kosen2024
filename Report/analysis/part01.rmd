@@ -1,0 +1,354 @@
+## データの整形
+本節では実験データの整形を行う．
+データの整形は，統計的な解析を適切に行うことを目的に行う．
+
+```{r}
+colorset = c('Upright'='#EF9873','Inverted'='#73C9EF')
+```
+
+### 生データを観察する
+
+図 \@ref(fig:plot-raw-bt) に，異常値除外前の全てのデータについてのBTの分布を示す．
+図 \@ref(fig:plot-raw-bt-sub) から，参加者14、16、21、3には抑制突破されなかった多数の試行がみられる．
+
+```{r read-raw}
+# `data/raw/experiment_main` から実験データを読み込む
+# * 実験データは参加者ごとにファイルが分かれている
+
+# CSVファイルが格納されているディレクトリのパスを指定
+strCsvPath <- here("data/raw/experiment_main")
+
+# 指定したディレクトリ内のすべてのCSVファイルのパスを取得
+fileNames <- list.files(strCsvPath, pattern = ".csv$", full.names = TRUE)
+
+# データを格納するためのデータフレームを初期化
+dfRAW <- data.frame()
+
+# 全ての参加者実験ファイルを一つのデータフレームに統合する
+# fileNames内のファイルごとにループ処理を行い、各CSVファイルを読み込む
+for (file in fileNames) {
+  # CSVファイルを読み込み、特定の列を削除し、新しいフラグ列を追加する
+  # flag:1 データを除外閾値に引っかかったラベル．後々除外．
+  singleCsvData <- read.csv(file) |>
+    # `trialID`, `month`, `date` 列を除去
+    select(-trialID, -month, -date) |>
+    # `breakTime`が 999 以上または 0.1 以下、または `ans` が "FALSE" の場合、フラグを1に設定
+    mutate(flag = if_else(breakTime >= 999 | breakTime <= 0.1 | ans == "FALSE", 1, 0))
+
+  # フラグが0(= 除外されない) のデータに基づいて、breakTime の平均と標準偏差を計算
+  tmp <- singleCsvData |>
+    # `flag == 0` の行のみをフィルタリング
+    dplyr::filter(flag == 0) |>
+    # `breakTime` の平均 (md) と標準偏差 (sd) を計算
+    summarise(
+      md = mean(breakTime, na.rm = TRUE),
+      sd = sd(breakTime, na.rm = TRUE)
+    )
+
+  # 元のフラグを尊重しつつ、全行に対して外れ値の検出を適用
+  singleCsvData <- singleCsvData |>
+    # フラグが1の行はそのままNAとし、それ以外の行に外れ値検出を適用
+    mutate(outlier = if_else(flag == 1, NA, # フラグが1の行はNAに設定
+                             if_else(breakTime <= tmp$md - 3 * tmp$sd |
+                                       breakTime >= tmp$md + 3 * tmp$sd, 1, 0))) # 3シグマから外れる行を外れ値としてフラグ付け
+
+  # 加工したデータを元のデータフレームに追加
+  dfRAW <- rbind(dfRAW, singleCsvData)
+}
+```
+
+```{r cleanup}
+dfRAW <- dfRAW |>
+  # `breakTime` 列の値が 999 の場合、その値を 15 に置き換える
+  mutate(breakTime = ifelse(breakTime == 999, 15, breakTime)) |>
+
+  # `subID` 列を因子型（factor）に変換する
+  mutate(subID = factor(subID)) |>
+
+  # `expID` 列を因子型に変換し、1 と 2 に対応するラベルをそれぞれ "Binary" と "Gray" に設定する
+  mutate(expID = factor(expID, levels = c(1, 2), labels = c("Binary", "Gray"))) |>
+
+  # `quadrant` 列を因子型に変換し、1 と 2 に対応するラベルをそれぞれ "Left" と "Right" に設定する
+  mutate(quadrant = factor(quadrant, levels = c(1, 2), labels = c("Left", "Right"))) |>
+
+  # `targetCategory` 列を因子型に変換し、"Upright" と "Inverted" に対応する因子レベルを設定する
+  mutate(targetCategory = factor(targetCategory, levels = c("Upright","Inverted"))) |>
+
+  # `targetID` が 20 以下の場合、"A" + `targetID` を2桁のゼロ埋めで作成（例: 01, 02, ...）
+  # `targetID` が 20 より大きい場合は、"B" + (`targetID` - 20) を2桁のゼロ埋めで作成
+  mutate(pairedID = ifelse(targetID <= 20,
+                           paste0("A", sprintf("%02d", targetID)),
+                           paste0("B", sprintf("%02d", targetID - 20))))
+```
+
+```{r plot-raw-bt, echo=FALSE, fig.align='center', fig.cap="breakTime の分布 (異常値除外前)", fig.height=6, fig.width=6, warning=FALSE, out.width='50%'}
+# 異常値除外前の全てのデータを用いた`breakTime` の分布をプロット
+# subIDごとにbreakTimeの分布プロットを作成
+
+# 平均値と標準誤差を計算するための summary_data を作成
+summary_data <- dfRAW %>%
+  group_by(expID, targetCategory) %>%
+  summarise(
+    mean = mean(breakTime),
+    se = sd(breakTime) / sqrt(n()),
+    .groups = 'drop'
+  )
+
+# プロットの作成
+plotRawBT <- ggplot() +
+
+  # ハーフアイプロット
+  ggdist::stat_halfeye(
+    data = dfRAW,
+    aes(x = targetCategory, y = breakTime, fill = targetCategory),
+    adjust = 0.5,         # バンド幅を調整して滑らかな外観にする
+    width = 0.6,          # ハーフアイプロットの幅
+    justification = -0.3, # プロットを左にシフトする
+    alpha = 0.5,           # 透明度を指定
+    .width = 0,
+    point_colour = NA
+  ) +
+
+  # ボックスプロット
+  geom_boxplot(
+    data = dfRAW,
+    aes(x = targetCategory, y = breakTime, fill = targetCategory),
+    width = 0.12,         # ボックスプロットの幅を狭く設定
+    outlier.shape = NA    # ボックスプロットの外れ値を表示しない
+  ) +
+
+  # ドットプロット (煩雑になったため除外)
+  ggdist::stat_dots(
+    data = dfRAW,
+    aes(x = targetCategory, y = breakTime, fill = targetCategory),
+    side = "both",        # ドットを両側に表示
+    justification = 0.5,  # ドットを中央に配置
+    binwidth = 0.05,      # ドットのビン幅
+    colour = "#1c1d2f",   # ドットの枠線の色
+    alpha = 0.7           # 透明度を指定
+  ) +
+  
+  geom_line(data = dfRAW,
+            aes(x = targetCategory, y = breakTime, group = interaction(expID, subID)),
+            position = position_dodge(0),
+            alpha = 0.1) +
+
+  # 平均値を菱形でプロット
+  geom_point(
+    data = summary_data,
+    aes(x = targetCategory, y = mean),
+    shape = 18,           # 菱形を指定
+    size = 4,             # サイズを指定
+    position = position_dodge(0.5)
+  ) +
+
+  # エラーバーを追加
+  geom_errorbar(
+    data = summary_data,
+    aes(x = targetCategory, y = mean, ymin = mean - se, ymax = mean + se),
+    width = 0.2,          # エラーバーの幅
+    position = position_dodge(0.5)
+  ) +
+
+  # y = 15 に水平線を描画
+  geom_hline(yintercept = 15, color = "red", linetype = "dotted", size = 0.5) +
+
+  # colorset を使用して fill の色を設定
+  scale_fill_manual(values = colorset) +
+
+  # expID で facet_wrap
+  facet_wrap(~ expID) +
+
+  # グラフのテーマ設定
+  theme_apa() +
+  theme(
+    legend.position = "bottom",    # 凡例を下に配置
+    legend.direction = "horizontal" # 凡例を横に並べる
+  )
+
+saveRDS(plotRawBT, file = here("data/plotRawBT.rds"))
+plot(plotRawBT)
+```
+
+```{r plot-raw-bt-sub, echo=FALSE, fig.align='center', fig.cap="参加者ごとのbreakTime の分布 (異常値除外前)", fig.height=8, fig.width=8, warning=FALSE, out.width='90%'}
+# 異常値除外前の全てのデータを用いた`breakTime` の分布をプロット
+# subIDごとにbreakTimeの分布プロットを作成
+plotRawBT_sub <- dfRAW |>
+  ggplot(aes(x = expID, y = breakTime, fill = targetCategory)) +
+
+  # ハーフアイプロット
+  ggdist::stat_halfeye(
+    adjust = 0.5,         # バンド幅を調整して滑らかな外観にする
+    width = 0.6,          # ハーフアイプロットの幅
+    .width = 0,           # 信頼区間バーを表示しない
+    justification = -0.3, # プロットを左にシフトする
+    alpha = 0.5,          # 透明度を指定
+    point_colour = NA
+  ) +
+
+  # ボックスプロット（ハーフアイプロット内に小さなボックスプロットを追加）
+  geom_boxplot(
+    width = 0.24,         # ボックスプロットの幅を狭く設定
+    outlier.shape = NA,   # ボックスプロットの外れ値を表示しない
+  ) +
+
+  scale_fill_manual(values = colorset) +  # colorset を使用して fill の色を設定
+
+  facet_wrap(~subID) + # subID でプロットを分割
+
+  # y = 15 に水平線を描画
+  geom_hline(yintercept = 15, color = "red", linetype = "dotted", size = 0.5) +
+  theme_apa() +
+    theme(
+    legend.position = "bottom",
+    legend.direction = "horizontal",
+  )
+
+saveRDS(plotRawBT_sub, file = here("data/plotRawBT_sub.rds"))
+plot(plotRawBT_sub)
+```
+
+### リジェクトする参加者を選択する
+実験での不備 (不正解の試行，15秒を超えるBTなど抑制突破が失敗した試行) を確認し，解析データから除いた．
+
+```{r check-outliers}
+# 異常値を含む行を参加者IDごとにカウントする
+countOutlier <- dfRAW |>
+  # 異常値（outlier 列が 1 である行）をフィルタリングする
+  dplyr::filter(outlier == 1) |>
+
+  # 実験ID（expID）とサブID（subID）でグループ化する
+  group_by(expID, subID) |>
+
+  # 各グループごとに異常値が含まれる試行の数を集計し、新しい列 outlierTrials に保存する
+  summarise(
+    outlierTrials = n(),
+    .groups = 'drop') |>
+
+  # 試行の総数（80）で割り、異常値が占める割合を計算し、Percent 列に保存する
+  mutate(Percent = outlierTrials / 80) |>
+
+  # 異常値が多い順に並べ替える
+  arrange(desc(outlierTrials))
+
+# 異常値のカウント結果を上位数行表示する
+# head(countOutlier)
+
+# フラグが 0 である行を、実験IDとサブIDごとにカウントする
+countFlag <- dfRAW |>
+  # フラグが 1 である行（flag 列が 1 の行）をフィルタリングする
+  dplyr::filter(flag == 1) |>
+  # 実験ID（expID）とサブID（subID）でグループ化する
+  group_by(expID, subID) |>
+  # 各グループごとにフラグが 0 である試行の数を集計し、新しい列 unusableTrials に保存する
+  summarise(unusableTrials = n(), .groups = 'drop') |>
+  # 試行の総数（80）で割り、フラグが 0 である試行が占める割合を計算し、Percent 列に保存する
+  mutate(Percent = unusableTrials / 80) |>
+  # フラグが 0 である試行が多い順に並べ替える
+  arrange(desc(unusableTrials))
+
+# フラグが 0 である試行のカウント結果を上位数行表示する
+# head(countFlag)
+
+subID_flagged_top <- head(countFlag$subID, 5)
+subID_ol_top <- head(countOutlier$subID, 5)
+```
+
+```{r plot-raw-outlierFlag, echo=FALSE, fig.align='center', fig.cap="参加者ごとの外れ値を記録した試行数", fig.height=6, fig.width=6, warning=FALSE, out.width='50%'}
+# flag=1 の数をプロット
+# flag が 1 の試行数を expID ごとに集計
+ol_count <- dfRAW %>%
+  dplyr::filter(outlier == 1) %>%
+  group_by(subID, expID) %>%
+  summarise(ol_count = n(), .groups = 'drop')
+
+# subID ごとの総数を計算し、多い順に並び替え
+ol_count <- ol_count %>%
+  group_by(subID) %>%
+  summarise(total_count = sum(ol_count)) %>%
+  arrange(desc(total_count)) %>%
+  left_join(ol_count, by = "subID")
+
+# subID を総数が多い順に並び替える
+ol_count <- ol_count %>%
+  mutate(subID = factor(subID, levels = unique(subID)))
+
+# 参加者ごとに flag が 1 の試行数を棒グラフでプロット
+plot_outlierCount <- ggplot(ol_count, aes(x = factor(subID), y = ol_count, fill = factor(expID))) +
+  geom_bar(stat = "identity", color = "black", alpha = 0.7) +
+    labs(x = "Subject ID",
+         y = "Number of Outliered Trials",
+         fill = "Experiment") +
+    theme_apa() +
+    theme(
+      legend.position = "bottom",
+      legend.direction = "horizontal"
+  )
+
+saveRDS(plot_outlierCount, file = here("data/plot_outlierCount.rds"))
+plot_outlierCount
+```
+
+```{r plot-raw-flag, fig.align='center', fig.cap="参加者ごとの異常値を記録した試行数", fig.height=6, fig.width=6, warning=FALSE, out.width='50%'}
+# flag=1 の数をプロット
+# flag が 1 の試行数をsubID, expID ごとに集計
+flag_count <- dfRAW %>%
+  dplyr::filter(flag == 1) %>%
+  group_by(subID, expID) %>%
+  summarise(flag_count = n(), .groups = 'drop')
+
+# subID ごとの総数を計算し、多い順に並び替え
+flag_count <- flag_count %>%
+  group_by(subID) %>%
+  summarise(total_count = sum(flag_count)) %>%
+  arrange(desc(total_count)) %>%
+  left_join(flag_count, by = "subID")
+
+# subID を総数が多い順に並び替える
+flag_count <- flag_count %>%
+  mutate(subID = factor(subID, levels = unique(subID)))
+
+# subID ごとに expID の積み上げ棒グラフを作成
+plot_flagCount <- ggplot(flag_count, aes(x = factor(subID), y = flag_count, fill = expID)) +
+  geom_bar(stat = "identity", color = "black", alpha = 0.7) +
+  labs(x = "Subject ID",
+       y = "Number of Flagged Trials",
+       fill = "Experiment") +
+  theme_apa() +
+  theme(
+    legend.position = "bottom",
+    legend.direction = "horizontal"
+  )
+
+saveRDS(plot_flagCount, file = here("data/plot_flagCount.rds"))
+plot_flagCount
+```
+
+図 \@ref(fig:plot-raw-outlierFlag) より，参加者1人あたりの外れ値に分類された試行はそれほど多くないことがわかる．
+図 \@ref(fig:plot-raw-flag) より，参加者`r paste(subID_flagged_top, collapse = ", ")` には解析に使用できない試行が多いことがわかる (誤った回答，抑制突破時間が0.1秒以下15秒以上)．
+
+```{r calc-reject-stats, include=FALSE}
+flagged_upper30 <- countFlag |>
+  dplyr::filter(Percent >= 0.3)
+subID_flagged_upper30 <- flagged_upper30$subID
+excludeSubID <- subID_flagged_upper30
+
+saveRDS(excludeSubID, file = here("data/processed/excludeSubID.rds"))
+
+total_trial <- 24 * 80 * 2
+rejected_trial <- length(subID_flagged_upper30) * 80 * 2
+rejected_percent <- rejected_trial * 100 / total_trial
+```
+
+ここで，試行に占める高いFlagged試行の割合 (30% 以上) の参加者は`r paste(subID_flagged_upper30, collapse = ", ")` で，これらの参加者を解析から除外する．
+この操作によって`r rejected_trial` 試行が分析から除外され，これは全ての試行 (`r total_trial` 試行) の`r rejected_percent`% にあたる．
+
+### データの保存
+前処理を行ったデータを`data/processed/` フォルダに`data.csv` として保存した．
+
+```{r save-data, include=FALSE}
+data <- dfRAW %>%
+  select(-ans, -see,-breakContrast)
+
+write.csv(data, here("data/processed/data.csv"), row.names = FALSE)
+```

@@ -1,0 +1,79 @@
+% 行数設定など行う
+\makeatletter
+\def\mojiparline#1{
+    \newcounter{mpl}
+    \setcounter{mpl}{#1}
+    \@tempdima=\linewidth
+    \advance\@tempdima by-\value{mpl}zw
+    \addtocounter{mpl}{-1}
+    \divide\@tempdima by \value{mpl}
+    \advance\kanjiskip by\@tempdima
+    \advance\parindent by\@tempdima
+}
+\makeatother
+\def\linesparpage#1{
+    \baselineskip=\textheight
+    \divide\baselineskip by #1
+}
+
+% 余白の設定
+% A4(297mm)
+\setlength{\textheight}{227truemm}
+\setlength{\headheight}{20truemm}
+\setlength{\topskip}{20truemm}
+\setlength{\headsep}{15truemm}
+\setlength{\footskip}{0truemm}
+\addtolength{\topmargin}{-1truein}
+
+% セクションの番号付けの深さを設定
+% 例えば3を指定すると、\subsubsubsectionまでは番号がつく
+\setcounter{secnumdepth}{5}
+
+% PDFのしおり（ブックマーク）の管理を行うためのパッケージ
+\usepackage{bookmark}
+
+% XeLaTeXのための追加の機能（多言語サポートなど）を提供するパッケージ
+\usepackage{xltxtra}
+
+% 日本語の文書をXeLaTeXで組版するためのパッケージ
+\usepackage{zxjatype}
+
+% 日本語フォント（IPAフォント）を使用するためのパッケージ
+\usepackage[ipa]{zxjafont}
+% ヒラギノの場合はこっち
+% \usepackage[hiragino]{zxjafont}
+
+% 図や表のキャプションのスタイルを設定するためのパッケージ
+\usepackage{caption}
+
+% 図のキャプションのフォント、ラベル、セパレーター、名前を設定
+\captionsetup[figure]{labelfont=bf,labelsep=period,name=図}
+
+% 行間の設定
+\usepackage{setspace}  % 行間を設定するためのパッケージ
+\setstretch{1.2}  % 1.5倍の行間
+
+\renewcommand{\contentsname}{目次}
+
+% 図の複数配置
+% https://gedevan-aleksizde.github.io/rmarkdown-cookbook/latex-subfigure.html
+\usepackage{subfig}
+
+% 図の配置ルール https://gedevan-aleksizde.github.io/rmarkdown-cookbook/figure-placement.html#latex-配置ルールを調整する
+\usepackage{float}
+\let\origfigure\figure
+\let\endorigfigure\endfigure
+\renewenvironment{figure}[1][2] {
+    \expandafter\origfigure\expandafter[H]
+} {
+    \endorigfigure
+}
+
+\usepackage{flafter}
+\renewcommand{\topfraction}{.85}
+\renewcommand{\bottomfraction}{.7}
+\renewcommand{\textfraction}{.15}
+\renewcommand{\floatpagefraction}{.66}
+\setcounter{topnumber}{3}
+\setcounter{bottomnumber}{3}
+\setcounter{totalnumber}{4}
