@@ -1,4 +1,4 @@
-/Report/data/
+/Report/data/*
 !/Report/data/.gitkeep
 
 /Report/report_files
